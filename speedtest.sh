@@ -1,7 +1,7 @@
 
-node_now=$(cat /etc/config/shadowsocksr |grep global_server|sed -e 's/\toption global_server//'  -e  "s/'cfg0//" -e "s/4a8f'//")
+node_now=$(cat /etc/config/shadowsocksr |grep global_server|sed -e 's/\toption global_server //'  -e  "s/'cfg0//" -e "s/4a8f'//")
 
-case $[$node_now*1] in 
+case $node_now in 
 6)
 echo  -e "当前节点:hostdare\n"
 ;;
