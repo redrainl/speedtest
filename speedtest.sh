@@ -109,7 +109,7 @@ case $node_assign in
 		curl https://speedtest.anycast.eu.org/500MB.swf -o /dev/null >log.txt --max-time 15 2>&1
 		aa=$(cat log.txt |tr '\r' '\n' | awk '{print $NF}'| sed '$d'|tail -n 1)
 		aa=$(cat log.txt |tr '\r' '\n' | awk '{print $NF}'| sed '$d'|tail -n 1|sed 's/k//g')
-		echo $(date +%D)"  "$(date +%T)$'\t'$aa
+		echo $node_string $(date +%D)"  "$(date +%T)$'\t'$aa
 	blue "------------------------------------"
 		;;
 	*)
