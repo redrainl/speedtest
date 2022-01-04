@@ -16,37 +16,37 @@ node_now=$(cat /etc/config/shadowsocksr |grep global_server|sed -e 's/\toption g
 
 case $node_now in 
 6)
-echo  -e "当前节点:hostdare\n"
-;;
+	echo  -e "当前节点:hostdare\n"
+	;;
 7)
-echo -e  "当前节点:vultr\n"
-;;
+	echo -e  "当前节点:vultr\n"
+	;;
 8)
-echo -e  "当前节点:ocp\n"
-;;
+	echo -e  "当前节点:ocp\n"
+	;;
 9)
-echo -e  "当前节点:aws\n"
-;;
+	echo -e  "当前节点:aws\n"
+	;;
 *)
-echo  -e  "当前节点:其他\n"
-;;
+	echo  -e  "当前节点:其他\n"
+	;;
 esac
 
 
 green "------------------------------------"
 
-echo "1、仅测速"
-echo "7、vultr"
-echo "6、hostdae"
-echo "8、ocp"
-echo "9、aws"
-echo "0、测速并替换"
+	echo "1、仅测速"
+	echo "7、vultr"
+	echo "6、hostdae"
+	echo "8、ocp"
+	echo "9、aws"
+	echo "0、测速并替换"
 green "------------------------------------"
 if read  -t 5 -p "请设置使用的代理:" node_assign
 then
-echo "已选择节点"$node_assign
+	echo "已选择节点"$node_assign
 else
-node_assign=0
+	node_assign=0
 fi
 
 case $node_assign in 
