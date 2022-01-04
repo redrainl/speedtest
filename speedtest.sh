@@ -94,6 +94,7 @@ case $node_assign in
 			/etc/init.d/shadowsocksr restart
 			echo "更换为hostdare节点" >>speedtest.log
 			echo "更换为hostdare节点" 
+		curl -o  /dev/null --data "token=24fa5acaf19d4cce84298df83c3f3dc2&title=节点切换通知&content=X X弄ssr节点已切换为hostdare"  http://pushplus.hxtrip.com/send  
 		fi
 	green "------------------------------------"
 	;;
