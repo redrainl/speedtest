@@ -17,18 +17,23 @@ node_now=$(cat /etc/config/shadowsocksr |grep global_server|sed -e 's/\toption g
 case $node_now in 
 6)
 	echo  -e "当前节点:hostdare\n"
+	node_string="hostdare"
 	;;
 7)
 	echo -e  "当前节点:vultr\n"
+	node_string="vultr"
 	;;
 8)
 	echo -e  "当前节点:ocp\n"
+	node_string="ocp"
 	;;
 9)
 	echo -e  "当前节点:aws\n"
+	node_string="aws"
 	;;
 *)
 	echo  -e  "当前节点:其他\n"
+	node_string="other"
 	;;
 esac
 
