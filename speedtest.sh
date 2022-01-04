@@ -1,3 +1,16 @@
+#!/bin/bash
+blue(){
+    echo -e "\033[34m\033[01m$1\033[0m"
+}
+green(){
+    echo -e "\033[32m\033[01m$1\033[0m"
+}
+yellow(){
+    echo -e "\033[33m\033[01m$1\033[0m"
+}
+red(){
+    echo -e "\033[31m\033[01m$1\033[0m"
+}
 
 node_now=$(cat /etc/config/shadowsocksr |grep global_server|sed -e 's/\toption global_server //'  -e  "s/'cfg0//" -e "s/4a8f'//")
 
@@ -20,7 +33,7 @@ echo  -e  "当前节点:其他\n"
 esac
 
 
-
+green "------------------------------------"
 
 echo "1、仅测速"
 echo "7、vultr"
@@ -28,7 +41,7 @@ echo "6、hostdae"
 echo "8、ocp"
 echo "9、aws"
 echo "0、测速并替换"
-
+green "------------------------------------"
 if read  -t 5 -p "请设置使用的代理:" node_assign
 then
 echo "已选择节点"$node_assign
@@ -68,6 +81,7 @@ case $node_assign in
 		echo "设置完成"
 	;;
 	0)
+	green "------------------------------------"
 		echo -e "\n启动测速并替换"
 		curl https://speedtest.anycast.eu.org/500MB.swf -o /dev/null >log.txt --max-time 15 2>&1
 		aa=$(cat log.txt |tr '\r' '\n' | awk '{print $NF}'| sed '$d'|tail -n 1)
@@ -81,15 +95,16 @@ case $node_assign in
 			echo "更换为hostdare节点" >>speedtest.log
 			echo "更换为hostdare节点" 
 		fi
-
+	green "------------------------------------"
 	;;
 	1)
-		
+	blue "------------------------------------"	
 		echo -e "\n启动测速"
 		curl https://speedtest.anycast.eu.org/500MB.swf -o /dev/null >log.txt --max-time 15 2>&1
 		aa=$(cat log.txt |tr '\r' '\n' | awk '{print $NF}'| sed '$d'|tail -n 1)
 		aa=$(cat log.txt |tr '\r' '\n' | awk '{print $NF}'| sed '$d'|tail -n 1|sed 's/k//g')
 		echo $(date +%D)"  "$(date +%T)$'\t'$aa
+	blue "------------------------------------"
 		;;
 	*)
 		echo "无效输入，退出"
