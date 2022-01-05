@@ -100,22 +100,40 @@ case $node_assign in
 		echo "设置完成"
 	;;
 	0)
-		green  "\n启动测速并替换，请耐心等待15秒："
+		green  "\n第一次测速并替换，请耐心等待15秒："
 		curl https://speedtest.anycast.eu.org/500MB.swf -o /dev/null >log.txt --max-time 15 2>&1 &
 		countdown 15
-		aa=$(cat log.txt |tr '\r' '\n' | awk '{print $NF}'| sed '$d'|tail -n 1)
+		aa1=$(cat log.txt |tr '\r' '\n' | awk '{print $NF}'| sed '$d'|tail -n 1)
 		aa=$(cat log.txt |tr '\r' '\n' | awk '{print $NF}'| sed '$d'|tail -n 1|sed 's/k//g')
 		# echo -e $node_string '\t\t' $(date +%D)'  '$(date +%T) '\t' $aa '\t定时测速' >>speedtest.log
-		printf "| %-15s|  %-10s %-10s|%8s  |%20s  |\n" $node_string $(date +%D) $(date +%T) $aa '定时测速'>>speedtest.log
-		echo -e $node_string $(date +%D)'  '$(date +%T)'\t'$aa 
-		if  [ $aa -lt 1500 ]; then
-			sed  -i  's/cfg..4a8f/cfg064a8f/'  /etc/config/shadowsocksr
-			/etc/init.d/shadowsocksr restart
-			yellow "更换为hostdare节点" >>speedtest.log
-			yellow "更换为hostdare节点" 
-                      # curl -o /dev/null --data "token=24fa5acaf19d4cce84168df83c3f3dc2&title=节点更换通知&content=730弄节点更换为hostdare"  http://pushplus.hxtrip.com/send
-                else
-                         yellow "本节点速度还可以，无需更换"
+		printf "| %-15s|  %-10s %-10s|%8s  |%20s  |\n" $node_string $(date +%D) $(date +%T) $aa1 '定时测速'>>speedtest.log
+		echo -e $node_string $(date +%D)'  '$(date +%T)'\t'$aa1 
+		if  [ $aa -gt 1500 ] && [ aa != aa1 ]
+		then
+			 yellow "本节点速度还可以，无需更换"
+			 
+		else
+
+			green  "第2次测速并替换，请耐心等待15秒："
+               		curl https://speedtest.anycast.eu.org/500MB.swf -o /dev/null >log.txt --max-time 15 2>&1 &
+                	countdown 15
+                	aa1=$(cat log.txt |tr '\r' '\n' | awk '{print $NF}'| sed '$d'|tail -n 1)
+                	aa=$(cat log.txt |tr '\r' '\n' | awk '{print $NF}'| sed '$d'|tail -n 1|sed 's/k//g')
+                	# echo -e $node_string '\t\t' $(date +%D)'  '$(date +%T) '\t' $aa '\t定时测速' >>speedtest.log
+               		printf "| %-15s|  %-10s %-10s|%8s  |%20s  |\n" $node_string $(date +%D) $(date +%T) $aa1 '定时测速'>>speedtest.log
+               		echo -e $node_string $(date +%D)'  '$(date +%T)'\t'$aa1
+
+			if  [ $aa -lt 1500 ] || [ aa1 = aa ]
+			then
+
+				sed  -i  's/cfg..4a8f/cfg064a8f/'  /etc/config/shadowsocksr
+				/etc/init.d/shadowsocksr restart
+				yellow "更换为hostdare节点" >>speedtest.log
+				yellow "更换为hostdare节点" 
+                       		curl -o /dev/null --data "token=24fa5acaf19d4cce84298df83c3f3dc2&title=节点更换通知&content=730弄节点更换为hostdare"  http://pushplus.hxtrip.com/send
+        		
+		
+                	fi
 		fi
 
 	;;
@@ -124,11 +142,11 @@ case $node_assign in
 		yellow "\n启动测速，请耐心等待15秒"
 		curl https://speedtest.anycast.eu.org/500MB.swf -o /dev/null >log.txt --max-time 15 2>&1 &
 		countdown 15
-		aa=$(cat log.txt |tr '\r' '\n' | awk '{print $NF}'| sed '$d'|tail -n 1)
+		aa1=$(cat log.txt |tr '\r' '\n' | awk '{print $NF}'| sed '$d'|tail -n 1)
 		aa=$(cat log.txt |tr '\r' '\n' | awk '{print $NF}'| sed '$d'|tail -n 1|sed 's/k//g')
                 # echo -e $node_string '\t\t' $(date +%D)'  '$(date +%T) '\t' $aa '\t手动测速' >>speedtest.log
-		printf "| %-15s|  %-10s %-10s|%8s  |%20s  |\n" $node_string $(date +%D) $(date +%T) $aa '手动测速'>>speedtest.log
-		echo -e $node_string $(date +%D)'  '$(date +%T)'\t'$aa
+		printf "| %-15s|  %-10s %-10s|%8s  |%20s  |\n" $node_string $(date +%D) $(date +%T) $aa1 '手动测速'>>speedtest.log
+		echo -e $node_string $(date +%D)'  '$(date +%T)'\t'$aa1
 		;;
 	*)
 		yellow "无效输入，退出"
