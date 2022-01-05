@@ -1,4 +1,5 @@
 #!/bin/bash
+
 blue(){
     echo -e "\033[34m\033[01m$1\033[0m"
 }
@@ -12,50 +13,60 @@ red(){
     echo -e "\033[31m\033[01m$1\033[0m"
 }
 
+
+countdown(){
+
+ for i in $(seq $1 -1 1)
+ do
+	echo -n $i;sleep 1;echo -ne "\r     \r"
+
+ done
+
+}
+
 node_now=$(cat /etc/config/shadowsocksr |grep global_server|sed -e 's/\toption global_server //'  -e  "s/'cfg0//" -e "s/4a8f'//")
 
 case $node_now in 
 6)
-	echo  -e "当前节点:hostdare\n"
-	node_string="hostdare"
-	;;
+yellow "\n当前节点:hostdare"
+node_string="hostdare"
+;;
 7)
-	echo -e  "当前节点:vultr\n"
-	node_string="vultr"
-	;;
+yellow  "\n当前节点:vultr"
+node_string="vultr"
+;;
 8)
-	echo -e  "当前节点:ocp\n"
-	node_string="ocp"
-	;;
+yellow  "\n当前节点:ocp"
+node_string="ocp"
+;;
 9)
-	echo -e  "当前节点:aws\n"
-	node_string="aws"
-	;;
+yellow  "\n当前节点:aws"
+node_string="aws"
+;;
 *)
-	echo  -e  "当前节点:其他\n"
-	node_string="other"
-	;;
+yellow "\n当前节点:其他"
+node_string="other"
+;;
 esac
 
 
-green "------------------------------------"
+green "-------------------------------------------"
 
-	echo "1、仅测速"
-	echo "7、vultr"
-	echo "6、hostdae"
-	echo "8、ocp"
-	echo "9、aws"
-	echo "0、测速并替换"
-green "------------------------------------"
-if read  -t 5 -p "请设置使用的代理:" node_assign
-then
-	echo "已选择节点"$node_assign
-else
-	node_assign=0
-fi
+echo "  1、仅测速"
+echo "  7、vultr"
+echo "  6、hostdae"
+echo "  8、ocp"
+echo "  9、aws"
+echo "  0、测速并替换"
+echo  "  10秒后默认选择[0、测速并替换]"
+green "-------------------------------------------"
+
+read  -t 10 -p "请设置使用的代理:" node_assign
+node_assign=${node_assign:-0}
 
 case $node_assign in 
 	7)
+		green '已选择'$node_assign
 		echo "设置节点"
 		sed  -i  's/cfg..4a8f/cfg074a8f/'  /etc/config/shadowsocksr
 		/etc/init.d/shadowsocksr restart
@@ -63,6 +74,7 @@ case $node_assign in
 	;;
 	#hostdare
 	6)
+		green '已选择'$node_assign
 		echo "设置节点"
 
 		sed  -i  's/cfg..4a8f/cfg064a8f/'  /etc/config/shadowsocksr
@@ -71,6 +83,7 @@ case $node_assign in
 	;;
 	# ocp
 	8)
+		green '已选择'$node_assign
 		echo "设置节点"
 
 		sed  -i  's/cfg..4a8f/cfg084a8f/'  /etc/config/shadowsocksr
@@ -79,6 +92,7 @@ case $node_assign in
 	;;
 	#aws
 	9)
+		green '已选择'$node_assign
 		echo "设置节点"
 
 		sed  -i  's/cfg..4a8f/cfg094a8f/'  /etc/config/shadowsocksr
@@ -86,34 +100,37 @@ case $node_assign in
 		echo "设置完成"
 	;;
 	0)
-	green "------------------------------------"
-		echo -e "\n启动测速并替换"
-		curl https://speedtest.anycast.eu.org/500MB.swf -o /dev/null >log.txt --max-time 15 2>&1
+		green  "\n启动测速并替换，请耐心等待15秒："
+		curl https://speedtest.anycast.eu.org/500MB.swf -o /dev/null >log.txt --max-time 15 2>&1 &
+		countdown 15
 		aa=$(cat log.txt |tr '\r' '\n' | awk '{print $NF}'| sed '$d'|tail -n 1)
 		aa=$(cat log.txt |tr '\r' '\n' | awk '{print $NF}'| sed '$d'|tail -n 1|sed 's/k//g')
-		echo $node_string $'\t' >>speedtest.log
-		echo $(date +%D)"  "$(date +%T)$'\t'$aa >>speedtest.log
-		echo $node_string $(date +%D)"  "$(date +%T)$'\t'$aa 
+		# echo -e $node_string '\t\t' $(date +%D)'  '$(date +%T) '\t' $aa '\t定时测速' >>speedtest.log
+		printf "| %-15s|  %-10s %-10s|%8s  |%20s  |\n" $node_string $(date +%D) $(date +%T) $aa '定时测速'>>speedtest.log
+		echo -e $node_string $(date +%D)'  '$(date +%T)'\t'$aa 
 		if  [ $aa -lt 1500 ]; then
 			sed  -i  's/cfg..4a8f/cfg064a8f/'  /etc/config/shadowsocksr
 			/etc/init.d/shadowsocksr restart
-			echo "更换为hostdare节点" >>speedtest.log
-			echo "更换为hostdare节点" 
-		curl -o  /dev/null --data "token=24fa5acaf19d4cce84298df83c3f3dc2&title=节点切换通知&content=X X弄ssr节点已切换为hostdare"  http://pushplus.hxtrip.com/send  
+			yellow "更换为hostdare节点" >>speedtest.log
+			yellow "更换为hostdare节点" 
+                else
+                         yellow "本节点速度还可以，无需更换"
 		fi
-	green "------------------------------------"
+
 	;;
 	1)
-	blue "------------------------------------"	
-		echo -e "\n启动测速"
-		curl https://speedtest.anycast.eu.org/500MB.swf -o /dev/null >log.txt --max-time 15 2>&1
+		
+		yellow "\n启动测速，请耐心等待15秒"
+		curl https://speedtest.anycast.eu.org/500MB.swf -o /dev/null >log.txt --max-time 15 2>&1 &
+		countdown 15
 		aa=$(cat log.txt |tr '\r' '\n' | awk '{print $NF}'| sed '$d'|tail -n 1)
 		aa=$(cat log.txt |tr '\r' '\n' | awk '{print $NF}'| sed '$d'|tail -n 1|sed 's/k//g')
-		echo $node_string $(date +%D)"  "$(date +%T)$'\t'$aa
-	blue "------------------------------------"
+                # echo -e $node_string '\t\t' $(date +%D)'  '$(date +%T) '\t' $aa '\t手动测速' >>speedtest.log
+		printf "| %-15s|  %-10s %-10s|%8s  |%20s  |\n" $node_string $(date +%D) $(date +%T) $aa '手动测速'>>speedtest.log
+		echo -e $node_string $(date +%D)'  '$(date +%T)'\t'$aa
 		;;
 	*)
-		echo "无效输入，退出"
+		yellow "无效输入，退出"
 
 		;;
 esac
