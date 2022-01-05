@@ -113,6 +113,7 @@ case $node_assign in
 			/etc/init.d/shadowsocksr restart
 			yellow "更换为hostdare节点" >>speedtest.log
 			yellow "更换为hostdare节点" 
+                      # curl -o /dev/null --data "token=24fa5acaf19d4cce84168df83c3f3dc2&title=节点更换通知&content=730弄节点更换为hostdare"  http://pushplus.hxtrip.com/send
                 else
                          yellow "本节点速度还可以，无需更换"
 		fi
